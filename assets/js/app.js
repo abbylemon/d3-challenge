@@ -57,15 +57,43 @@ d3.csv("./assets/data/data.csv").then(function(stateStats) {
         .append("circle")
         .attr("cx", (d) => xLinearScale(d.age))
         .attr("cy", d => yLinearScale(d.smokes))
-        .attr("r", "5")
-        .attr("fill", "blue");
+        .attr("r", "15")
+        .attr("fill", "blue")
+        .attr("opacity", ".5");
 
     var toolTip = d3.tip()
-        .attr("class", "tooltip");
+    .attr("class", "d3-tip")
+    .offset([80, -60])
+    .html(function(d) {
+        return (`${d.abbr}<br>Age: ${d.age}<br>Smokes: ${d.smokes}`);
+    });
 
-    circlesGroup.call(toolTip);
+    // Step 7: Create tooltip in the chart
+    // ==============================
+    chartGroup.call(toolTip);
 
-    // chartGroup.append("text")
+    // Step 8: Create event listeners to display and hide the tooltip
+    // ==============================
+    circlesGroup.on("click", function(data) {
+    toolTip.show(data, this);
+    })
+    // onmouseout event
+    .on("mouseout", function(data, index) {
+        toolTip.hide(data);
+    });
+
+    chartGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left + 40)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .attr("class", "stateText")
+      .text("Smokes");
+
+    chartGroup.append("text")
+      .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+      .attr("class", "stateText")
+      .text("Age");
 
 }).catch(function (e) {
     console.log(e);
