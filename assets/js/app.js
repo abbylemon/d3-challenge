@@ -7,7 +7,7 @@ var margin = {
     top: 20,
     right: 150,
     bottom: 60,
-    left: 30
+    left: 80
   };
 
 var width = svgWidth - margin.left - margin.right;
@@ -30,15 +30,13 @@ d3.csv("./assets/data/data.csv").then(function(stateStats) {
         data.smokes = +data.smokes;
         data.age = +data.age;
     });
-    // console.log(stateStats.smokes);
-    // console.log(stateStats.age);
 
     var xLinearScale = d3.scaleLinear()
         .domain([0.9 * d3.min(stateStats, d => d.age), 1.1 * d3.max(stateStats, d => d.age)])
         .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-        .domain([0, 1.1 * d3.max(stateStats, d => d.smokes)])
+        .domain([0.9 * d3.min(stateStats, d => d.smokes), 1.1 * d3.max(stateStats, d => d.smokes)])
         .range([height, 0]);
 
     var bottomAxis = d3.axisBottom(xLinearScale);
@@ -56,17 +54,17 @@ d3.csv("./assets/data/data.csv").then(function(stateStats) {
         .enter()
         .append("circle")
         .attr("cx", (d) => xLinearScale(d.age))
-        .attr("cy", d => yLinearScale(d.smokes))
+        .attr("cy", (d) => yLinearScale(d.smokes))
         .attr("r", "15")
-        .attr("fill", "blue")
-        .attr("opacity", ".5");
+        .attr("fill", "pink")
+        .attr("opacity", ".7");
 
     var toolTip = d3.tip()
-    .attr("class", "d3-tip")
-    .offset([80, -60])
-    .html(function(d) {
-        return (`${d.abbr}<br>Age: ${d.age}<br>Smokes: ${d.smokes}`);
-    });
+        .attr("class", "d3-tip")
+        .offset([80, -60])
+        .html(function(d) {
+            return (`${d.abbr}<br>Age: ${d.age}<br>Smokes: ${d.smokes}`);
+        });
 
     // Step 7: Create tooltip in the chart
     // ==============================
@@ -75,25 +73,56 @@ d3.csv("./assets/data/data.csv").then(function(stateStats) {
     // Step 8: Create event listeners to display and hide the tooltip
     // ==============================
     circlesGroup.on("click", function(data) {
-    toolTip.show(data, this);
+        toolTip.show(data, this);
     })
     // onmouseout event
     .on("mouseout", function(data, index) {
         toolTip.hide(data);
     });
 
+    var circleLabels = chartGroup.selectAll(null).data(stateStats).enter().append("text");
+
+    circleLabels
+        .attr("x", function(d) {
+            return xLinearScale(d.age);
+        })
+        .attr("y", function(d) {
+            return yLinearScale(d.smokes);
+        })
+        .text(function(d) {
+            return d.abbr;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "12px")
+        .attr("text-anchor", "middle")
+        .attr("fill", "white");
+
+    // Create axes labels
     chartGroup.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left + 40)
-      .attr("x", 0 - (height / 2))
-      .attr("dy", "1em")
-      .attr("class", "stateText")
-      .text("Smokes");
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left + 10)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .attr("class", "axisText")
+        .text("Smokes (%)");
 
     chartGroup.append("text")
-      .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
-      .attr("class", "stateText")
-      .text("Age");
+        .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+        .attr("class", "axisText")
+        .text("Age (Median)");
+
+    // chartGroup.append("text")
+    //   .attr("transform", "rotate(-90)")
+    //   .attr("y", 0 - margin.left + 40)
+    //   .attr("x", 0 - (height / 2))
+    //   .attr("dy", "1em")
+    //   .attr("class", "stateText")
+    //   .text("Smokes");
+
+    // chartGroup.append("text")
+    //   .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+    //   .attr("class", "stateText")
+    //   .text("Age");
 
 }).catch(function (e) {
     console.log(e);
