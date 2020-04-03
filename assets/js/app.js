@@ -5,12 +5,12 @@ var svgHeight = 500;
 
 var margin = {
     top: 20,
-    right: 40,
+    right: 150,
     bottom: 60,
-    left: 100
+    left: 30
   };
 
-var width = svgWidth = margin.left - margin.right;
+var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 var svg = d3.select("#scatter")
@@ -34,11 +34,11 @@ d3.csv("./assets/data/data.csv").then(function(stateStats) {
     // console.log(stateStats.age);
 
     var xLinearScale = d3.scaleLinear()
-        .domain([0, 1.1 * d3.max(stateStats, d => d.age)])
+        .domain([0.9 * d3.min(stateStats, d => d.age), 1.1 * d3.max(stateStats, d => d.age)])
         .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(stateStats, d => d.age)])
+        .domain([0, 1.1 * d3.max(stateStats, d => d.smokes)])
         .range([height, 0]);
 
     var bottomAxis = d3.axisBottom(xLinearScale);
