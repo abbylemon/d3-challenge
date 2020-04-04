@@ -48,8 +48,8 @@ function renderXaxes(newXScale, xAxis) {
     var bottomAxis = d3.axisBottom(newXScale);
   
     xAxis.transition()
-      .duration(1000)
-      .call(bottomAxis);
+        .duration(1000)
+        .call(bottomAxis);
   
     return xAxis;
   }
@@ -59,8 +59,8 @@ function renderYaxes(newYScale, yAxis) {
     var leftAxis = d3.axisLeft(newYScale);
   
     yAxis.transition()
-      .duration(1000)
-      .call(leftAxis);
+        .duration(1000)
+        .call(leftAxis);
   
     return yAxis;
   }
@@ -70,20 +70,21 @@ function renderYaxes(newYScale, yAxis) {
 function renderxCircles(circlesGroup, newXScale, chosenXAxis) {
 
     circlesGroup.transition()
-      .duration(1000)
-      .attr("cx", d => newXScale(d[chosenXAxis]));
+        .duration(1000)
+        .attr("cx", d => newXScale(d[chosenXAxis]));
   
     return circlesGroup;
   }
 
 function renderyCircles(circlesGroup, newYScale, chosenYAxis) {
 
-circlesGroup.transition()
-    .duration(1000)
-    .attr("cy", d => newYScale(d[chosenYAxis]));
+    circlesGroup.transition()
+        .duration(1000)
+        .attr("cy", d => newYScale(d[chosenYAxis]));
 
-return circlesGroup;
+    return circlesGroup;
 }
+
 
 // function used for updating circles group with new tooltip
 // function updateToolTip(chosenXAxis, circlesGroup) {
@@ -217,6 +218,23 @@ d3.csv("./assets/data/data.csv").then(function(stateStats, err) {
 
     // updateToolTip function above csv import
     // var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
+    var circleLabels = chartGroup.selectAll(null).data(stateStats).enter().append("text");
+
+    circleLabels
+        .attr("x", function(d) {
+            return xLinearScale(d[chosenXAxis]);
+        })
+        .attr("y", function(d) {
+            return yLinearScale(d[chosenYAxis]);
+        })
+        .text(function(d) {
+            return d.abbr;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "12px")
+        .attr("text-anchor", "middle")
+        .attr("fill", "white");
 
     xlabelsGroup.selectAll("text")
         .on("click", function() {
