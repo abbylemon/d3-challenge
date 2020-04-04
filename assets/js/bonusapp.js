@@ -85,6 +85,26 @@ function renderyCircles(circlesGroup, newYScale, chosenYAxis) {
     return circlesGroup;
 }
 
+function renderxLables(circleLabels, newXScale, chosenXAxis) {
+    circleLabels.transition()
+        .duration(1000)
+        .attr("x", function(d) {
+            return newXScale(d[chosenXAxis]);
+        });
+
+    return circleLabels;
+}
+
+function renderyLables(circleLabels, newYScale, chosenYAxis) {
+    circleLabels.transition()
+        .duration(1000)
+        .attr("y", function(d) {
+            return newYScale(d[chosenYAxis]);
+        });
+
+    return circleLabels;
+}
+
 
 // function used for updating circles group with new tooltip
 // function updateToolTip(chosenXAxis, circlesGroup) {
@@ -250,6 +270,7 @@ d3.csv("./assets/data/data.csv").then(function(stateStats, err) {
                 xAxis = renderXaxes(xLinearScale, xAxis);
                 // update circles with new xvalues
                 circlesGroup = renderxCircles(circlesGroup, xLinearScale, chosenXAxis);
+                circleLabels = renderxLables(circleLabels, xLinearScale, chosenXAxis);
                 // update tooltips with new info
                 // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
@@ -305,6 +326,7 @@ d3.csv("./assets/data/data.csv").then(function(stateStats, err) {
                 yAxis = renderYaxes(yLinearScale, yAxis);
                 // update circles with new xvalues
                 circlesGroup = renderyCircles(circlesGroup, yLinearScale, chosenYAxis);
+                circleLabels = renderyLables(circleLabels, yLinearScale, chosenYAxis);
                 // update tooltips with new info
                 // circlesGroup = updateToolTip(chosenYAxis, circlesGroup);
 
