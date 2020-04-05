@@ -99,7 +99,7 @@ function renderyLables(circleLabels, newYScale, chosenYAxis) {
     circleLabels.transition()
         .duration(1000)
         .attr("y", function(d) {
-            return newYScale(d[chosenYAxis]);
+            return 1.01*newYScale(d[chosenYAxis]);
         });
 
     return circleLabels;
@@ -246,7 +246,7 @@ d3.csv("./assets/data/data.csv").then(function(stateStats, err) {
             return xLinearScale(d[chosenXAxis]);
         })
         .attr("y", function(d) {
-            return yLinearScale(d[chosenYAxis]);
+            return 1.01*yLinearScale(d[chosenYAxis]);
         })
         .text(function(d) {
             return d.abbr;
